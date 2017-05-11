@@ -1,4 +1,4 @@
-# version 0.07
+# version 0.04
 # min_value is the minimum value of all houses on the board
 
 import numpy as np
@@ -119,34 +119,34 @@ def generate_configuration(houses,board):
     while True:
         # if the amount of small houses on the board is not the required amount
         # place it
-        while smallhousecount != small:
-            x2 = x1 + smallinfo['width']
-            y2 = y1 + smallinfo['length']
+        while bighousecount != big:
+            x2 = x1 + biginfo['width']
+            y2 = y1 + biginfo['length']
 
             # if the width of the house from x1 is bigger than the width of
             # the array, generate a new number
             while x2 >= MAXWIDTH:
                 x1 = random.randint(0, MAXWIDTH)
-                x2 = x1 + smallinfo['width']
+                x2 = x1 + biginfo['width']
 
             # if the width of the house from y1 is bigger than the width of
             # the array, generate a new number
             while y2 >= MAXLENGTH:
                 y1 = random.randint(0, MAXLENGTH)
-                y2 = y1 + smallinfo['length']
+                y2 = y1 + biginfo['length']
 
             # checks if ANY of the values in the x,y positions is not 0,
             # of where the house is to be placed, if so generate new x,y positions
             if (board[y1:y2,x1:x2] != 0).any():
                 x1 = random.randint(0, MAXWIDTH -1 )
-                x2 = x1 + smallinfo['width']
+                x2 = x1 + biginfo['width']
                 y1 = random.randint(0, MAXLENGTH - 1)
-                y2 = y2 + smallinfo['length']
+                y2 = y2 + biginfo['length']
 
             else:
                 # places houses and increases counter by 1
-                np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] ==0, 1)
-                smallhousecount += 1
+                np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] ==0, 3)
+                bighousecount += 1
 
         while midhousecount != middle:
             x2 = x1 + midinfo['width']
@@ -177,34 +177,36 @@ def generate_configuration(houses,board):
                 np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] ==0, 2)
                 midhousecount += 1
 
-        while bighousecount != big:
-            x2 = x1 + biginfo['width']
-            y2 = y1 + biginfo['length']
+        while smallhousecount != small:
+            x2 = x1 + smallinfo['width']
+            y2 = y1 + smallinfo['length']
 
             # if the width of the house from x1 is bigger than the width of
             # the array, generate a new number
             while x2 >= MAXWIDTH:
                 x1 = random.randint(0, MAXWIDTH)
-                x2 = x1 + biginfo['width']
+                x2 = x1 + smallinfo['width']
 
             # if the width of the house from y1 is bigger than the width of
             # the array, generate a new number
             while y2 >= MAXLENGTH:
                 y1 = random.randint(0, MAXLENGTH)
-                y2 = y1 + biginfo['length']
+                y2 = y1 + smallinfo['length']
 
             # checks if ANY of the values in the x,y positions is not 0,
-            # of where the house is to be placed, if so generate new x,y positions
             if (board[y1:y2,x1:x2] != 0).any():
                 x1 = random.randint(0, MAXWIDTH -1 )
-                x2 = x1 + biginfo['width']
+                x2 = x1 + smallinfo['width']
                 y1 = random.randint(0, MAXLENGTH - 1)
-                y2 = y2 + biginfo['length']
+                y2 = y2 + smallinfo['length']
 
+                # of where the house is to be placed, if so generate new x,y positions
             else:
                 # places houses and increases counter by 1
-                np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] ==0, 3)
-                bighousecount += 1
+                np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] ==0, 1)
+                smallhousecount += 1
+
+
         else:
             break
 
@@ -288,10 +290,10 @@ def image(board):
 def main():
 
     print "Amount of houses, 20, 40 or 60 variant?"
-    x = 40
+    x = 60
 
     # wants user input if that is equal to 20, 40 or 60 it continues
-    while x != 40:
+    while x != 60:
         x = int(raw_input())
         if x == 20:
             break
@@ -301,7 +303,7 @@ def main():
             break
 
     print "How many repititions?"
-    repititions = 20 #int(raw_input()6
+    repititions = 20 #int(raw_input()
 
     # inits board
     board = initboard()
