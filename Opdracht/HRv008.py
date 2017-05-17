@@ -44,8 +44,9 @@ def initboard():
 
 
 def score(repititions):
+
     # sets the amount of repititions
-    repititions = repititions
+    rep = repititions
 
     # sets the best value to the minimum value of all houses combined
     best_val = minimum
@@ -57,7 +58,7 @@ def score(repititions):
     # attempts to hill climb, hoping for an increase in value every itteration
     # and if the value of the result is better than the old best value(minium to min_value)
     # it sets the best value to that new best value and sets the configuration to that configuration
-    for i in range(repititions):
+    for i in range(rep):
         A = generate_configuration()
         AB = hill_climbing(A) # -> is to return the free space atleast, so the value function
                               # can determin the score
@@ -76,21 +77,13 @@ def value():
     FreeMid = B
     FreeBig = C
 
-    # gets the amount of small, medium and large homes from global variable X
-    Small = 60.0 / 100
-    Mid = 25.0 / 100
-    Big = 15.0 / 100
-    Smallhome = int(x * Small)
-    Middlehome = int(x * Mid)
-    Bighome = int(x * Big)
-
     # determins the value of the homes with added free space
     NSmall = smallhouseinfo['value'] + (smallhouseinfo['value increase'] * FreeSmall)
     NMid = midhouseinfo['value'] + (midhouseinfo['value increase'] * FreeMid)
     NBig = bighouseinfo['value'] + (bighouseinfo['value increase'] * FreeBig)
 
     # sums the new values up
-    value = (NSmall * Smallhome) + (NMid * Middlehome) + (NBig * Bighome)
+    value = (NSmall * houses['familyhomes']) + (NMid * houses['bungalows']) + (NBig * houses['maisons'])
 
     # returns the value
     return value
@@ -285,8 +278,8 @@ def main():
 
     print "Amount of houses, 20, 40 or 60 variant?"
     # wants user input if that is equal to 20, 40 or 60 it continues
+    global x
     while x != 60:
-        global x
         x = 60 #int(raw_input())
         if x == 20:
             break
