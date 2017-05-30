@@ -91,22 +91,28 @@ def value():
     distance = []
     distances = []
 
-
+    #iterate over each small house
     for i in smallhouses:
+        # store coordinates of each house
         x1 = i["x"]["x1"]
         x2 = i["x"]["x2"]
         y1 = i["y"]["y1"]
         y2 = i["y"]["y2"]
         f = 1
-
+        
+        #ensure that you don't look outside of the board
         while x1>f and y1>f and (y2+f)<MAXLENGTH and (x2+f)<MAXWIDTH:
+            # if not all numbers found in this part of the board are zero check if they are '4' (is water)
             if not (board[(x1-f):(x1-1),y1-f:y2+f] == 0).all():
+                # if it's a 4 continue expanding
                 if (board[(x1-f):(x1-1),y1-f:y2+f] == 4).any():
-                    print("jeej")
+                    print("succes")
+                # else store the distancevalue for this house and break
                 else:
                     distancevalue.append(f-1)
                     print "f = ", f
                     break
+            # do the same for the other directions of the house
             if not (board[(x2+1):(x2+f),y1-f:y2+f] == 0).all():
                 if (board[(x2+1):(x2+f),y1-f:y2+f] == 4).any():
                     print("jeej")
@@ -128,6 +134,7 @@ def value():
                     distancevalue.append(f-1)
                     print "i = ", f
                     break
+            # increase the distance each iteration by 1
             else:
                 f += 1
 
