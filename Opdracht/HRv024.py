@@ -53,7 +53,7 @@ def initboard():
     # returns the initialized board
     return board
 
-def hill_climb(allhomesinfo, oldvalue):
+def hill_climb(allhomesinfo):
     h = random.randint(0, x-1)
     j = random.randint(0, MAXWIDTH)
     k = random.randint(0, MAXLENGTH)
