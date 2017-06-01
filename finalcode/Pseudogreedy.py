@@ -610,13 +610,11 @@ def image(board):
     img.set_cmap('Accent')
     PLT.axis('off')
     PLT.savefig('map.png', bbox_inches='tight')
-    #PLT.show()
+    PLT.show()
 
 def main():
 
-    print "Amount of houses, 20, 40 or 60 variant?"
-
-    # wants user input if that is equal to 20, 40 or 60 it continues
+    # set x to desired housing amount
     global x
     while x != 40:
         x = 60 #int(raw_input())
@@ -626,9 +624,6 @@ def main():
             break
         elif x == 60:
             break
-
-    print "How many repititions?"
-    repititions = 40 #int(raw_input()
 
     # gets the amount of each houses
     global houses
@@ -645,27 +640,27 @@ def main():
     global bighouseinfo
     bighouseinfo = housing('maison')
 
-    # generates a random configuration
-    #generate_configuration()
-
+    # generates a random configuration and run greedy
     start_generator()
-    # shows the board
 
     valueslist = []
-
     oldvalue = 0
+    
+    # get value of configuration
     oldvalue = value()
-
     valuessave = ((oldvalue))
     valueslist.append((valuessave))
-
-    print("Best score found:")
+    
+    # print score
+    print("Score found:")
     print(oldvalue)
 
+    # store value in textfile
     valuesrandom = open("valuesrandom.txt", "a")
     for i in valueslist:
         print>>valuesrandom, i
-
+    
+    # show image of board
     image(board)
 
 
