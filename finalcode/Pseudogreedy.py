@@ -53,120 +53,14 @@ def initboard():
     # returns the initialized board
     return board
 
-def hill_climb(allhomesinfo, oldvalue):
-    h = random.randint(0, x-1)
-    j = random.randint(0, MAXWIDTH)
-    k = random.randint(0, MAXLENGTH)
-
-    oldvalue = value()
-    values_array = []
-
-    for i in range(2000):
-        house = allhomesinfo[h]
-        x1 = house["x"]["x1"]
-        x2 = house["x"]["x2"]
-        y1 = house["y"]["y1"]
-        y2 = house["y"]["y2"]
-
-        housingtype = house["type"]
-        j1 = j
-        k1 = k
-
-        print(allhomesinfo[h])
-        j2 = j1 + allhomesinfo[h]["type"]["width"]
-        k2 = k1 + allhomesinfo[h]["type"]["length"]
-
-        if j1 > MAXWIDTH or j2 > MAXWIDTH:
-            j = random.randint(0, MAXWIDTH)
-            j1 = j
-            j2 = j1 + housingtype["width"]
-
-        if k1 > MAXLENGTH or k2 > MAXLENGTH:
-            k = random.randint(0, MAXLENGTH)
-            k1 = k
-            k2 = k1 + housingtype["length"]
-
-        else:
-            info = {"id": h, "x":{"x1" : j1, "x2" : j2}, "y":{"y1" : k1, "y2" : k2}, "type": housingtype}
-            np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] == 0, 0)
-            allhomesinfo.remove((house))
-            np.place(board[k1:k2,j1:j2], board[k1:k2,j1:j2] == int(housingtype["type"]), int(housingtype["type"]))
-            allhomesinfo.append((info))
-
-            newvalue = value()
-
-            valuesave = oldvalue
-
-            values_array.append((valuesave))
-
-            #allhomes.append(info nieuwe entry)
-            print(oldvalue)
-            print(newvalue)
-
-            if newvalue > oldvalue:
-                oldvalue = newvalue
-
-                j = random.randint(0, MAXWIDTH)
-                k = random.randint(0, MAXLENGTH)
-                h = random.randint(0, x-1)
-
-            else:
-                np.place(board[k1:k2,j1:j2], board[k1:k2,j1:j2] == 0, 0)
-                del allhomesinfo[h]
-
-                np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] == int(housingtype["type"]), int(housingtype["type"]))
-                info = {"id": h, "x":{"x1" : x1, "x2" : x2}, "y":{"y1" : y1, "y2" : y2}, "type": housingtype}
-                allhomesinfo.append((info))
-
-                #allhome.remove(nieuwe)
-                j = random.randint(0, MAXWIDTH)
-                k = random.randint(0, MAXLENGTH)
-                h = random.randint(0, x-1)
-
-    s = str(round(time.time() * 1000))
-    valuestext = open("results/20/values" + s + ".txt", "w")
-    for i in values_array:
-        print>>valuestext, i
-
-    return oldvalue
-
-def score(repititions):
-
-    # sets the amount of repititions
-    rep = repititions
-
-    # sets the best value to the minimum value of all houses combined
-    best_val = minimum
-
-    # sets the best configuration as non-existent
-    best_conf = None
-
-    # itterates over the repititions, generating a configuration for each configuration
-    # attempts to hill climb, hoping for an increase in value every itteration
-    # and if the value of the result is better than the old best value(minium to min_value)
-    # it sets the best value to that new best value and sets the configuration to that configuration
-    for i in range(rep):
-        A = generate_configuration()
-        AB = hill_climbing(A) # -> is to return the free space atleast, so the value function
-                              # can determin the score
-        Value_AB = value(A, B, C)
-
-        if Value_AB > best_val:
-            best_val = Value_AB
-            best_conf = AB # -> needs to have the configuration too
-
-    # returns the best configuration
-    return best_conf
-
-
 def value():
-    # free space between blocks
-    #freesmall/mid/big is the free space between houses
+    # calculates the values of all houses with free space
 
     distanceallhouse = []
     housingdict = []
     counter = 0
 
+    # iterate over housing dict
     for i in allhomesinfo:
         x1 = i["x"]["x1"]
         x2 = i["x"]["x2"]
@@ -176,8 +70,11 @@ def value():
 
         housingdict.append(i)
 
+        # store free space variable depending on housing type
         FS = i["type"]["Free space"]
 
+        # calculate the total free space around each house and append in dict
+        # water is also allowed for free space
         while True:
             f += 1
             if (board[(y1-FS-f):(y1-FS-1),x1:x2] != 0).any() and (board[(y1-FS-f):(y1-FS-1),x1:x2] != 4).any():
@@ -207,14 +104,15 @@ def value():
             if f >= MAXLENGTH:
                 break
 
-        sumofvalue = 0
 
+        sumofvalue = 0
         j = 0
+
+        # for each house, calculate the total score with base value and value increase based on free space
         for i in distanceallhouse:
             sumofvalue += ((i["f"] * housingdict[j]["type"]["value increase"])) + i["Value"]
             j += 1
     return sumofvalue
-
 
 def watershape():
     maxarea = MAXLENGTH * MAXWIDTH # gets max area of the array
