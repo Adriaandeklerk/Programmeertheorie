@@ -1,7 +1,7 @@
 # Final version of the Hill Climber and Random sampling
 # Programmeertheorie
 # Case: Amstelhaege
-# 
+#
 # Joren de Goede, Troy Breijaert, Adriaan de Klerk
 #
 
@@ -59,18 +59,18 @@ def hill_climb(allhomesinfo):
 
     # pick a random house (h)
     h = random.randint(0, x-1)
-    
+
     # generate random new x and y
     j = random.randint(0, MAXWIDTH)
     k = random.randint(0, MAXLENGTH)
-    
+
     # calculate the old value
     oldvalue = value()
     values_array = []
-    
+
     # iterate 2000 times over board
     for i in range(2000):
-        
+
         # get x and y coordinates of house
         house = allhomesinfo[h]
         x1 = house["x"]["x1"]
@@ -79,15 +79,15 @@ def hill_climb(allhomesinfo):
         y2 = house["y"]["y2"]
 
         housingtype = house["type"]
-        
+
         # store random x and y value
         j1 = j
         k1 = k
-        
+
         # get second x and y value for new house
         j2 = j1 + allhomesinfo[h]["type"]["width"]
         k2 = k1 + allhomesinfo[h]["type"]["length"]
-        
+
         # check if random coordinates don't exceed boundaries or generate other
         if j1 > MAXWIDTH or j2 > MAXWIDTH:
             j = random.randint(0, MAXWIDTH)
@@ -98,7 +98,7 @@ def hill_climb(allhomesinfo):
             k = random.randint(0, MAXLENGTH)
             k1 = k
             k2 = k1 + housingtype["length"]
-        
+
         # place new house on the map and remove the old house
         else:
             info = {"id": h, "x":{"x1" : j1, "x2" : j2}, "y":{"y1" : k1, "y2" : k2}, "type": housingtype}
@@ -106,17 +106,17 @@ def hill_climb(allhomesinfo):
             allhomesinfo.remove((house))
             np.place(board[k1:k2,j1:j2], board[k1:k2,j1:j2] == int(housingtype["type"]), int(housingtype["type"]))
             allhomesinfo.append((info))
-            
+
             # calculate new value
             newvalue = value()
-            
+
             # store all values in array for textfile
             valuesave = oldvalue
             values_array.append((valuesave))
 
             print(oldvalue)
             print(newvalue)
-            
+
             # check if new value is better than old value and go on to the next house
             if newvalue > oldvalue:
                 oldvalue = newvalue
@@ -124,7 +124,7 @@ def hill_climb(allhomesinfo):
                 j = random.randint(0, MAXWIDTH)
                 k = random.randint(0, MAXLENGTH)
                 h = random.randint(0, x-1)
-            
+
             # else restore the old house, remove the new one and go on to the next house
             else:
                 np.place(board[k1:k2,j1:j2], board[k1:k2,j1:j2] == 0, 0)
@@ -140,40 +140,11 @@ def hill_climb(allhomesinfo):
 
     # store values in textfile
     s = str(round(time.time() * 1000))
-    valuestext = open("results/20/values" + s + ".txt", "w")
+    valuestext = open("values" + s + ".txt", "w")
     for i in values_array:
         print>>valuestext, i
 
     return oldvalue
-
-def score(repititions):
-
-    # sets the amount of repititions
-    rep = repititions
-
-    # sets the best value to the minimum value of all houses combined
-    best_val = minimum
-
-    # sets the best configuration as non-existent
-    best_conf = None
-
-    # itterates over the repititions, generating a configuration for each configuration
-    # attempts to hill climb, hoping for an increase in value every itteration
-    # and if the value of the result is better than the old best value(minium to min_value)
-    # it sets the best value to that new best value and sets the configuration to that configuration
-    for i in range(rep):
-        A = generate_configuration()
-        AB = hill_climbing(A) # -> is to return the free space atleast, so the value function
-                              # can determin the score
-        Value_AB = value(A, B, C)
-
-        if Value_AB > best_val:
-            best_val = Value_AB
-            best_conf = AB # -> needs to have the configuration too
-
-    # returns the best configuration
-    return best_conf
-
 
 def value():
     # calculates the values of all houses with free space
@@ -191,7 +162,7 @@ def value():
         f = 1
 
         housingdict.append(i)
-        
+
         # store free space variable depending on housing type
         FS = i["type"]["Free space"]
 
@@ -226,10 +197,10 @@ def value():
             if f >= MAXLENGTH:
                 break
 
-        
+
         sumofvalue = 0
         j = 0
-        
+
         # for each house, calculate the total score with base value and value increase based on free space
         for i in distanceallhouse:
             sumofvalue += ((i["f"] * housingdict[j]["type"]["value increase"])) + i["Value"]
@@ -581,25 +552,19 @@ def image(board):
     img.set_cmap('Accent')
     PLT.axis('off')
     PLT.savefig('map.png', bbox_inches='tight')
-    #PLT.show()
+    PLT.show()
 
 def main():
-
-    print "Amount of houses, 20, 40 or 60 variant?"
-
-    # wants user input if that is equal to 20, 40 or 60 it continues
+    # set the amount of houses
     global x
     while x != 40:
-        x = 60 #int(raw_input())
+        x = 60 #int(change amount of houses)
         if x == 20:
             break
         elif x == 40:
             break
         elif x == 60:
             break
-
-    print "How many repititions?"
-    repititions = 40 #int(raw_input()
 
     # gets the amount of each houses
     global houses
@@ -619,20 +584,28 @@ def main():
     # generates a random configuration
     start_generator()
 
-    valueslist = []
+    # remove hashes to calculate value of random sample
+    #oldvalue = 0
+    #oldvalue = value()
+    #print("Score found:")
+    #print(oldvalue)
+    #valueslist = []
+    #oldvalue = value()
+    #valuessave = ((oldvalue))
+    #valueslist.append((valuessave))
+    
+    # remove hashes to save result in file
+    #valuesrandom = open("valuesrandom.txt", "a")
+    #for i in valueslist:
+    #    print>>valuesrandom, i
 
+    # runs the hill climber 2000 times and gives best value
     oldvalue = 0
-    oldvalue = value()
-
-    valuessave = ((oldvalue))
-    valueslist.append((valuessave))
-
+    oldvalue = hill_climb(allhomesinfo)
     print("Best score found:")
     print(oldvalue)
 
-    valuesrandom = open("valuesrandom.txt", "a")
-    for i in valueslist:
-        print>>valuesrandom, i
+
 
     # shows the board
     image(board)
