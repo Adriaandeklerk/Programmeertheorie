@@ -467,12 +467,14 @@ def generate_configuration():
                 # places houses and increases counter by 1
                 np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] ==0, 1)
                 smallhousecount += 1
-
+                
+                # store info in dict
                 info = {"id": counter, "x":{"x1" : x1, "x2" : x2}, "y":{"y1" : y1, "y2" : y2}, "type": smallhouseinfo}
                 smallhouses.append((info))
                 allhomesinfo.append((info))
                 counter += 1
-
+                
+        # write dicts to textfile
         else:
             smallhomestext = open("testsmallhouses.txt", "w")
             allhomes = open("allhomes.txt", "w")
