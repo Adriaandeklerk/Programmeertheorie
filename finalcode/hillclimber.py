@@ -2,7 +2,7 @@
 # Programmeertheorie
 # Case: Amstelhaege
 #
-# Joren de Goede, Troy Breijaert, Adriaan de Klerk
+# Adriaan de Klerk, Joren de Goede, Troy Breijaert
 #
 
 import numpy as np
