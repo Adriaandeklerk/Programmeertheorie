@@ -131,6 +131,12 @@ def watershape():
 
 def generate_configuration():
 
+    # generates a configuration for the board
+    # pseudo-randomly generated water and maison positions
+    # using an inverse to the greedy approach by placing the less valued homes
+    # as close to eachother as possible, whilst trying to maximize the space for maisons
+    # checking for the minimum free space along the way.
+
     # info containing the amount of houses to place
     small = houses['familyhomes']
     middle = houses['bungalows']
@@ -148,13 +154,15 @@ def generate_configuration():
     bighousecount = 0
     watercount = 0
     counter = 0
-    #bighouses = 0
 
+    # timeout block so the loop doesn't get stuck and quits after 5 seconds has passed.
     timeout = time.time() + 5
 
+    # determins the distance required for corners
     bighousecorner = int(math.sqrt((bighouseinfo['Free space']**2) + bighouseinfo['Free space']**2))
     midhousecorner = int(math.sqrt((midhouseinfo['Free space']**2) + midhouseinfo['Free space']**2))
     smallhousecorner = int(math.sqrt((smallhouseinfo['Free space']**2) + smallhouseinfo['Free space']**2))
+
     print "timestart:", time.time()
     while True:
 
@@ -177,6 +185,7 @@ def generate_configuration():
                 y1 = random.randint(0, MAXLENGTH)
                 y2 = y1 + water['y']
 
+            # checks if ANY of the values in the x,y positions is not 0
             if (board[y1:y2,x1:x2] != 0).any():
                 x1 = random.randint(0, MAXWIDTH -1 )
                 x2 = x1 + water['x']
@@ -195,7 +204,7 @@ def generate_configuration():
             x2 = x1 + smallhouseinfo['width']
             y2 = y1 + smallhouseinfo['length']
 
-            # checks if ANY of the values in the x,y positions is not 0,
+            # checks if ANY of the values in the x,y positions is not 0
             if (board[y1:y2,x1:x2] != 0).any():
                 x1 += 1
                 x2 = x1 + smallhouseinfo['width']
@@ -205,6 +214,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y1 + smallhouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - smallhouseinfo['Free space']):(y2 + smallhouseinfo['Free space']),x1:x2] != 0).any():
                 x1 += 1
                 x2 = x1 + bighouseinfo['width']
@@ -214,6 +224,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[y1:y2,(x1 - smallhouseinfo['Free space']):(x2 + smallhouseinfo['Free space'])] != 0).any():
                 x1 += 1
                 x2 = x1 + bighouseinfo['width']
@@ -223,6 +234,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - smallhousecorner):(y2 + smallhousecorner), (x1 - smallhousecorner):(x2 + smallhousecorner)] != 0).any():
                 x1 += 1
                 x2 = x1 + bighouseinfo['width']
@@ -232,6 +244,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighouseinfo['Free space']):(y2 + bighouseinfo['Free space']), x1:x2] == 3).any() or (board[(y1 - midhouseinfo['Free space']):(y2 + midhouseinfo['Free space']), x1:x2] == 2).any():
                 x1 += 1
                 x2 = x1 + bighouseinfo['width']
@@ -241,6 +254,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighouseinfo['Free space']):(y2 + bighouseinfo['Free space']), x1:x2] == 3).any() or (board[y1:y2, (x1 - midhouseinfo['Free space']):(x2 + midhouseinfo['Free space'])] == 2).any():
                 x1 += 1
                 x2 = x1 + bighouseinfo['width']
@@ -250,6 +264,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighousecorner):(y2 + bighousecorner), (x1 - bighousecorner):(x2 + bighousecorner)] == 3).any() or (board[(y1 - midhousecorner):(y2 + midhousecorner), (x1 - midhousecorner):(x2 + midhousecorner)] == 2).any():
                 x1 += 1
                 x2 = x1 + bighouseinfo['width']
@@ -289,6 +304,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y1 + midhouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - midhouseinfo['Free space']):(y2 + midhouseinfo['Free space']),x1:x2] != 0).any():
                 x1 += 1
                 x2 = x1 + midhouseinfo['width']
@@ -298,6 +314,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y1 + midhouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[y1:y2,(x1 - midhouseinfo['Free space']):(x2 + midhouseinfo['Free space'])] != 0).any():
                 x1 += 1
                 x2 = x1 + midhouseinfo['width']
@@ -307,6 +324,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y1 + midhouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - midhousecorner):(y2 + midhousecorner), (x1 - midhousecorner):(x2 + midhousecorner)] != 0).any():
                 x1 += 1
                 x2 = x1 + midhouseinfo['width']
@@ -316,6 +334,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y1 + midhouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighouseinfo['Free space']):(y2 + bighouseinfo['Free space']), x1:x2] == 3).any():
                 x1 += 1
                 x2 = x1 + midhouseinfo['width']
@@ -325,6 +344,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y1 + midhouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighouseinfo['Free space']):(y2 + bighouseinfo['Free space']), x1:x2] == 3).any():
                 x1 += 1
                 x2 = x1 + midhouseinfo['width']
@@ -334,6 +354,7 @@ def generate_configuration():
                     y1 += 1
                     y2 = y1 + midhouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighousecorner):(y2 + bighousecorner), (x1 - bighousecorner):(x2 + bighousecorner)] == 3).any():
                 x1 += 1
                 x2 = x1 + midhouseinfo['width']
@@ -370,24 +391,28 @@ def generate_configuration():
                 y1 = random.randint(0, MAXLENGTH)
                 y2 = y1 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             if (board[y1:y2,x1:x2] != 0).any():
                 x1 = random.randint(0, MAXWIDTH -1 )
                 x2 = x1 + bighouseinfo['width']
                 y1 = random.randint(0, MAXLENGTH - 1)
                 y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighouseinfo['Free space']):(y2 + bighouseinfo['Free space']),x1:x2] != 0).any():
                 x1 = random.randint(0, MAXWIDTH -1 )
                 x2 = x1 + bighouseinfo['width']
                 y1 = random.randint(0, MAXLENGTH - 1)
                 y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[y1:y2,(x1 - bighouseinfo['Free space']):(x2 + bighouseinfo['Free space'])] != 0).any():
                 x1 = random.randint(0, MAXWIDTH -1 )
                 x2 = x1 + bighouseinfo['width']
                 y1 = random.randint(0, MAXLENGTH - 1)
                 y2 = y2 + bighouseinfo['length']
 
+            # checks if ANY of the values in the x,y positions is not 0
             elif (board[(y1 - bighousecorner):(y2 + bighousecorner), (x1 - bighousecorner):(x2 + bighousecorner)] != 0).any():
                 x1 = random.randint(0, MAXWIDTH -1 )
                 x2 = x1 + bighouseinfo['width']
@@ -404,7 +429,8 @@ def generate_configuration():
                 bighouses.append((info))
                 allhomesinfo.append((info))
                 counter += 1
-
+        
+        # write dicts to textfile
         else:
             smallhomestext = open("testsmallhouses.txt", "w")
             allhomes = open("allhomes.txt", "w")
@@ -420,36 +446,20 @@ def generate_configuration():
                 print>>bighomestext, i
                 print>>allhomes, i
 
+        # checks if the amount of houses has been met, if so breaks the loop
         if counter >= sumofhouses:
             break
-
+        # else checks if the time passed has exceeded the timeout limit.
         elif time.time() >= timeout:
             break
     print "time ended:", time.time()
     return board
 
-
-def hill_climbing(A):
-
-    # stuck here too
-
-    best_value = min_val(x)
-    best_conf = None
-    for conf in [something](A):
-        val = value(conf)
-        if best_val > val:
-            best_conf = conf
-            best_val = val
-
-    if best_conf > value(A):
-        return A
-    return hill_climbing(best_conf)
-
-
-def housing(housename):
-
-    # returns a dict containing the house type, surface area, value, free space,
-    # value increase per meter of free space, length and width
+def housing(housename):    
+    # generates dicts based on the home input
+    # these contain the type of house, the surface area, base value, minimum required free space
+    # the value increase per half meter, length and width per half meter and the type
+    
     if housename == 'familyhome':
         return{
                "Housetype":"familyhome","Surface Area":64,
