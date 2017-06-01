@@ -1,9 +1,9 @@
-# version 0.13
-# min_value is the minimum value of all houses on the board
-# random water generation and building placement
-# more refined building placement
-# fixed generating configuration
-# fixed watershape to be a ratio between 1 and 4 instead of 1:4
+# Final version of the pseudo greedy algorithm
+# Programmeertheorie
+# Case: Amstelhaege
+#
+# Joren de Goede, Troy Breijaert, Adriaan de Klerk
+#
 
 import numpy as np
 import matplotlib as mpl
