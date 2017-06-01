@@ -1,9 +1,9 @@
-# final version of hillclimber and random sampling
-# min_value is the minimum value of all houses on the board
-# random water generation and building placement
-# more refined building placement
-# fixed generating configuration
-# fixed watershape to be a ratio between 1 and 4 instead of 1:4
+# Final version of the Hill Climber and Random sampling
+# Programmeertheorie
+# Case: Amstelhaege
+# 
+# Joren de Goede, Troy Breijaert, Adriaan de Klerk
+#
 
 import numpy as np
 import matplotlib as mpl
@@ -20,14 +20,16 @@ x = 0
 houses = {}
 board = []
 minimum = 0
+
+# create dicts to store information of houses
 smallhouseinfo = {}
 midhouseinfo = {}
 bighouseinfo = {}
 allhomesinfo = []
-
 smallhouses = []
 middlehouses = []
 bighouses = []
+
 myset = set()
 
 def min_val():
@@ -54,14 +56,22 @@ def initboard():
     return board
 
 def hill_climb(allhomesinfo, oldvalue):
+
+    # pick a random house (h)
     h = random.randint(0, x-1)
+    
+    # generate random new x and y
     j = random.randint(0, MAXWIDTH)
     k = random.randint(0, MAXLENGTH)
-
+    
+    # calculate the old value
     oldvalue = value()
     values_array = []
-
+    
+    # iterate 2000 times over board
     for i in range(2000):
+        
+        # get x and y coordinates of house
         house = allhomesinfo[h]
         x1 = house["x"]["x1"]
         x2 = house["x"]["x2"]
@@ -69,13 +79,16 @@ def hill_climb(allhomesinfo, oldvalue):
         y2 = house["y"]["y2"]
 
         housingtype = house["type"]
+        
+        # store random x and y value
         j1 = j
         k1 = k
-
-        print(allhomesinfo[h])
+        
+        # get second x and y value for new house
         j2 = j1 + allhomesinfo[h]["type"]["width"]
         k2 = k1 + allhomesinfo[h]["type"]["length"]
-
+        
+        # check if random coordinates don't exceed boundaries or generate other
         if j1 > MAXWIDTH or j2 > MAXWIDTH:
             j = random.randint(0, MAXWIDTH)
             j1 = j
@@ -85,31 +98,34 @@ def hill_climb(allhomesinfo, oldvalue):
             k = random.randint(0, MAXLENGTH)
             k1 = k
             k2 = k1 + housingtype["length"]
-
+        
+        # place new house on the map and remove the old house
         else:
             info = {"id": h, "x":{"x1" : j1, "x2" : j2}, "y":{"y1" : k1, "y2" : k2}, "type": housingtype}
             np.place(board[y1:y2,x1:x2], board[y1:y2,x1:x2] == 0, 0)
             allhomesinfo.remove((house))
             np.place(board[k1:k2,j1:j2], board[k1:k2,j1:j2] == int(housingtype["type"]), int(housingtype["type"]))
             allhomesinfo.append((info))
-
+            
+            # calculate new value
             newvalue = value()
-
+            
+            # store all values in array for textfile
             valuesave = oldvalue
-
             values_array.append((valuesave))
 
-            #allhomes.append(info nieuwe entry)
             print(oldvalue)
             print(newvalue)
-
+            
+            # check if new value is better than old value and go on to the next house
             if newvalue > oldvalue:
                 oldvalue = newvalue
 
                 j = random.randint(0, MAXWIDTH)
                 k = random.randint(0, MAXLENGTH)
                 h = random.randint(0, x-1)
-
+            
+            # else restore the old house, remove the new one and go on to the next house
             else:
                 np.place(board[k1:k2,j1:j2], board[k1:k2,j1:j2] == 0, 0)
                 del allhomesinfo[h]
@@ -118,11 +134,11 @@ def hill_climb(allhomesinfo, oldvalue):
                 info = {"id": h, "x":{"x1" : x1, "x2" : x2}, "y":{"y1" : y1, "y2" : y2}, "type": housingtype}
                 allhomesinfo.append((info))
 
-                #allhome.remove(nieuwe)
                 j = random.randint(0, MAXWIDTH)
                 k = random.randint(0, MAXLENGTH)
                 h = random.randint(0, x-1)
 
+    # store values in textfile
     s = str(round(time.time() * 1000))
     valuestext = open("results/20/values" + s + ".txt", "w")
     for i in values_array:
@@ -160,13 +176,13 @@ def score(repititions):
 
 
 def value():
-    # free space between blocks
-    #freesmall/mid/big is the free space between houses
+    # calculates the values of all houses with free space
 
     distanceallhouse = []
     housingdict = []
     counter = 0
 
+    # iterate over housing dict
     for i in allhomesinfo:
         x1 = i["x"]["x1"]
         x2 = i["x"]["x2"]
@@ -175,9 +191,12 @@ def value():
         f = 1
 
         housingdict.append(i)
-
+        
+        # store free space variable depending on housing type
         FS = i["type"]["Free space"]
 
+        # calculate the total free space around each house and append in dict
+        # water is also allowed for free space
         while True:
             f += 1
             if (board[(y1-FS-f):(y1-FS-1),x1:x2] != 0).any() and (board[(y1-FS-f):(y1-FS-1),x1:x2] != 4).any():
@@ -207,9 +226,11 @@ def value():
             if f >= MAXLENGTH:
                 break
 
+        
         sumofvalue = 0
-
         j = 0
+        
+        # for each house, calculate the total score with base value and value increase based on free space
         for i in distanceallhouse:
             sumofvalue += ((i["f"] * housingdict[j]["type"]["value increase"])) + i["Value"]
             j += 1
@@ -498,23 +519,6 @@ def generate_configuration():
 
     return board
 
-def hill_climbing(A):
-
-    # stuck here too
-
-    best_value = min_val(x)
-    best_conf = None
-    for conf in [something](A):
-        val = value(conf)
-        if best_val > val:
-            best_conf = conf
-            best_val = val
-
-    if best_conf > value(A):
-        return A
-    return hill_climbing(best_conf)
-
-
 def housing(housename):
 
     # returns a dict containing the house type, surface area, value, free space,
@@ -613,10 +617,7 @@ def main():
     bighouseinfo = housing('maison')
 
     # generates a random configuration
-    #generate_configuration()
-
     start_generator()
-    # shows the board
 
     valueslist = []
 
@@ -633,6 +634,7 @@ def main():
     for i in valueslist:
         print>>valuesrandom, i
 
+    # shows the board
     image(board)
 
 
